@@ -1,0 +1,10 @@
+1:
+    C = A & B
+    W = A ^ B
+i:
+    W = ((S = A ^ B) ^ C)
+    C1 = A & B
+    C2 = S & C
+    W+ = C1 ^ C2
+    CN = C1 | C2
+    C = CN
