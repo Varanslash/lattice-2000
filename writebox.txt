@@ -1,2 +1,4 @@
+// 5 gates per bit
+
 D = (WE & I) | (!WE & D)
 Q = TSB(RE, D)
