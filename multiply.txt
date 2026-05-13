@@ -1,4 +1,4 @@
 // Uses the add.txt file via +=.
-// 11985 gates
+// 12240 gates
 
 R[i] += B[k] ? A[i] : 0
