@@ -156,6 +156,30 @@ fn main() {
                 reg_c = reg_w;
                 i = pcinc(i);
             }
+            0x16 => { // ICA
+                reg_a = math::add(reg_a, 1)[0];
+                i = pcinc(i);
+            }
+            0x17 => { // ICW
+                reg_w = math::add(reg_w, 1)[0];
+                i = pcinc(i);
+            }
+            0x18 => { // ICC
+                reg_c = math::add(reg_c, 1)[0];
+                i = pcinc(i);
+            }
+            0x19 => { // DCA
+                reg_a = math::sub(reg_a, 1)[0];
+                i = pcinc(i);
+            }
+            0x1A => { // DCW
+                reg_w = math::sub(reg_w, 1)[0];
+                i = pcinc(i);
+            }
+            0x1B => { // DCC
+                reg_c = math::sub(reg_c, 1)[0];
+                i = pcinc(i);
+            }
             _ => {
                 println!("Unknown instruction: {}", instr[0]);
                 break;

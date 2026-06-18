@@ -17,6 +17,12 @@ fn assemble(code: String) -> Vec<u8> {
             continue;
         }
         match instruction[0] {
+            "NOP" => {
+                bytes.push(0x00);
+                bytes.push(0x00);
+                bytes.push(0x00);
+                bytes.push(0x00);
+            }
             "ADA" => {
                 bytes.push(0x01);
                 let addr = instruction[1].parse::<u8>().unwrap();
@@ -158,6 +164,43 @@ fn assemble(code: String) -> Vec<u8> {
                 bytes.push(0x00);
                 bytes.push(0x00);
             }
+            "ICA" => {
+                bytes.push(0x16);
+                bytes.push(0x00);
+                bytes.push(0x00);
+                bytes.push(0x00);
+            }
+            "ICW" => {
+                bytes.push(0x17);
+                bytes.push(0x00);
+                bytes.push(0x00);
+                bytes.push(0x00);
+            }
+            "ICC" => {
+                bytes.push(0x18);
+                bytes.push(0x00);
+                bytes.push(0x00);
+                bytes.push(0x00);
+            }
+            "DCA" => {
+                bytes.push(0x19);
+                bytes.push(0x00);
+                bytes.push(0x00);
+                bytes.push(0x00);
+            }
+            "DCW" => {
+                bytes.push(0x1A);
+                bytes.push(0x00);
+                bytes.push(0x00);
+                bytes.push(0x00);
+            }
+            "DCC" => {
+                bytes.push(0x1B);
+                bytes.push(0x00);
+                bytes.push(0x00);
+                bytes.push(0x00);
+            }
+             _ => panic!("Unknown instruction"),
             _ => panic!("Unknown instruction"),
         }
     }
