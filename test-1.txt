@@ -1,0 +1,7 @@
+NTA
+NTW
+NTC
+NOP
+NOP
+NOP
+HLT
