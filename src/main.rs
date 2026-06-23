@@ -17,7 +17,8 @@ fn main() {
     let mut gt: u8 = 0;
     let mut lt: u8 = 0;
     let mut eq: u8 = 0;
-    let mut memory: HashMap<u8, u8> = HashMap::new();
+    let mut memory: Vec<u8> = vec![0; 256];
+    let mut callstack: Vec<u8> = Vec::new();
 
     while i < code.len() {
         let instr = vec![code[i], code[i+1]];
@@ -27,7 +28,7 @@ fn main() {
                 i += 4;
             }
             0x01 => { // ADA
-                let res = math::add(reg_a, match memory.get(&instr[1]) {
+                let res = math::add(reg_a, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
@@ -35,7 +36,7 @@ fn main() {
                 i = pcinc(i);
             }
             0x02 => { // ADW
-                let res = math::add(reg_w, match memory.get(&instr[1]) {
+                let res = math::add(reg_w, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
@@ -43,7 +44,7 @@ fn main() {
                 i = pcinc(i);
             }
             0x03 => { // ADC
-                let res = math::add(reg_c, match memory.get(&instr[1]) {
+                let res = math::add(reg_c, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
@@ -51,7 +52,7 @@ fn main() {
                 i = pcinc(i);
             }
             0x04 => { // SBA
-                let res = math::sub(reg_a, match memory.get(&instr[1]) {
+                let res = math::sub(reg_a, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
@@ -59,7 +60,7 @@ fn main() {
                 i = pcinc(i);
             }
             0x05 => { // SBW
-                let res = math::sub(reg_w, match memory.get(&instr[1]) {
+                let res = math::sub(reg_w, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
@@ -67,7 +68,7 @@ fn main() {
                 i = pcinc(i);
             }
             0x06 => { // SBC
-                let res = math::sub(reg_c, match memory.get(&instr[1]) {
+                let res = math::sub(reg_c, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
@@ -75,63 +76,63 @@ fn main() {
                 i = pcinc(i);
             }
             0x07 => { // MLA
-                reg_a = math::mul(reg_a, match memory.get(&instr[1]) {
+                reg_a = math::mul(reg_a, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
                 i = pcinc(i);
             }
             0x08 => { // MLW
-                reg_w = math::mul(reg_w, match memory.get(&instr[1]) {
+                reg_w = math::mul(reg_w, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
                 i = pcinc(i);
             }
             0x09 => { // MLC
-                reg_c = math::mul(reg_c, match memory.get(&instr[1]) {
+                reg_c = math::mul(reg_c, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
                 i = pcinc(i);
             }
             0x0A => { // DVA
-                reg_a = math::div(reg_a, match memory.get(&instr[1]) {
+                reg_a = math::div(reg_a, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
                 i = pcinc(i);
             }
             0x0B => { // DVW
-                reg_w = math::div(reg_w, match memory.get(&instr[1]) {
+                reg_w = math::div(reg_w, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
                 i = pcinc(i);
             }
             0x0C => { // DVC
-                reg_c = math::div(reg_c, match memory.get(&instr[1]) {
+                reg_c = math::div(reg_c, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
                 i = pcinc(i);
             }
             0x0D => { // LMA
-                reg_a = math::lmod(reg_a, match memory.get(&instr[1]) {
+                reg_a = math::lmod(reg_a, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
                 i = pcinc(i);
             }
             0x0E => { // LMW
-                reg_w = math::lmod(reg_w, match memory.get(&instr[1]) {
+                reg_w = math::lmod(reg_w, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
                 i = pcinc(i);
             }
             0x0F => { // LMC
-                reg_c = math::lmod(reg_c, match memory.get(&instr[1]) {
+                reg_c = math::lmod(reg_c, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
@@ -186,7 +187,7 @@ fn main() {
                 i = pcinc(i);
             }
             0x1C => { // CPA
-                let res = compare::cmp(reg_a, match memory.get(&instr[1]) {
+                let res = compare::cmp(reg_a, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
@@ -196,7 +197,7 @@ fn main() {
                 i = pcinc(i);
             }
             0x1D => { // CPW
-                let res = compare::cmp(reg_w, match memory.get(&instr[1]) {
+                let res = compare::cmp(reg_w, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
@@ -206,7 +207,7 @@ fn main() {
                 i = pcinc(i);
             }
             0x1E => { // CPC
-                let res = compare::cmp(reg_c, match memory.get(&instr[1]) {
+                let res = compare::cmp(reg_c, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
@@ -216,63 +217,63 @@ fn main() {
                 i = pcinc(i);
             }
             0x1F => { // ORA
-                reg_a = logic::lor(reg_a, match memory.get(&instr[1]) {
+                reg_a = logic::lor(reg_a, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
                 i = pcinc(i);
             }
             0x20 => { // ORW
-                reg_w = logic::lor(reg_w, match memory.get(&instr[1]) {
+                reg_w = logic::lor(reg_w, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
                 i = pcinc(i);
             }
             0x21 => { // ORC
-                reg_c = logic::lor(reg_c, match memory.get(&instr[1]) {
+                reg_c = logic::lor(reg_c, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
                 i = pcinc(i);
             }
             0x22 => { // ANA
-                reg_a = logic::land(reg_a, match memory.get(&instr[1]) {
+                reg_a = logic::land(reg_a, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
                 i = pcinc(i);
             }
             0x23 => { // ANW
-                reg_w = logic::land(reg_w, match memory.get(&instr[1]) {
+                reg_w = logic::land(reg_w, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
                 i = pcinc(i);
             }
             0x24 => { // ANC
-                reg_c = logic::land(reg_c, match memory.get(&instr[1]) {
+                reg_c = logic::land(reg_c, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
                 i = pcinc(i);
             }
             0x25 => { // XRA
-                reg_a = logic::lxor(reg_a, match memory.get(&instr[1]) {
+                reg_a = logic::lxor(reg_a, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
                 i = pcinc(i);
             }
             0x26 => { // XRW
-                reg_w = logic::lxor(reg_w, match memory.get(&instr[1]) {
+                reg_w = logic::lxor(reg_w, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
                 i = pcinc(i);
             }
             0x27 => { // XRC
-                reg_c = logic::lxor(reg_c, match memory.get(&instr[1]) {
+                reg_c = logic::lxor(reg_c, match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0,
                 });
@@ -291,36 +292,36 @@ fn main() {
                 i = pcinc(i);
             }
             0x2B => { // LDA
-                reg_a = match memory.get(&instr[1]) {
+                reg_a = match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0
                 };
                 i = pcinc(i);
             }
             0x2C => { // LDW
-                reg_w = match memory.get(&instr[1]) {
+                reg_w = match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0
                 };
                 i = pcinc(i);
             }
             0x2D => { // LDC
-                reg_c = match memory.get(&instr[1]) {
+                reg_c = match memory.get(instr[1] as usize) {
                     Some(x) => *x,
                     None => 0
                 };
                 i = pcinc(i);
             }
             0x2E => { // STA
-                memory.insert(instr[1], reg_a);
+                memory[instr[1] as usize] = reg_c;
                 i = pcinc(i);
             }
             0x2F => { // STW
-                memory.insert(instr[1], reg_w);
+                memory[instr[1] as usize] = reg_c;
                 i = pcinc(i);
             }
             0x30 => { // STC
-                memory.insert(instr[1], reg_c);
+                memory[instr[1] as usize] = reg_c;
                 i = pcinc(i);
             }
             0x31 => { // LAI
