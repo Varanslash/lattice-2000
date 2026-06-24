@@ -17,6 +17,7 @@ fn main() {
     let mut gt: u8 = 0;
     let mut lt: u8 = 0;
     let mut eq: u8 = 0;
+    let mut sp: u8 = 0xFF;
     let mut memory: Vec<u8> = vec![0; 256];
     let mut callstack: Vec<u8> = Vec::new();
 
@@ -328,12 +329,45 @@ fn main() {
                 reg_a = instr[1];
                 i = pcinc(i)
             }
-            0x31 => { // LWI
+            0x32 => { // LWI
                 reg_w = instr[1];
                 i = pcinc(i)
             }
-            0x31 => { // LCI
+            0x33 => { // LCI
                 reg_c = instr[1];
+                i = pcinc(i)
+            }
+            0x34 => { // PHA
+                memory[sp as usize] = reg_a;
+                sp = math::sub(sp, 1)[0];
+                i = pcinc(i)
+            }
+            0x35 => { // PHW
+                memory[sp as usize] = reg_w;
+                sp = math::sub(sp, 1)[0];
+                i = pcinc(i)
+            }
+            0x36 => { // PHC
+                memory[sp as usize] = reg_c;
+                sp = math::sub(sp, 1)[0];
+                i = pcinc(i)
+            }
+            0x37 => { // PLA
+                reg_a = memory[sp as usize];
+                memory[sp as usize] = 0x00;
+                sp = math::add(sp, 1)[0];
+                i = pcinc(i)
+            }
+            0x38 => { // PLW
+                reg_w = memory[sp as usize];
+                memory[sp as usize] = 0x00;
+                sp = math::add(sp, 1)[0];
+                i = pcinc(i)
+            }
+            0x39 => { // PLC
+                reg_c = memory[sp as usize];
+                memory[sp as usize] = 0x00;
+                sp = math::add(sp, 1)[0];
                 i = pcinc(i)
             }
             0xFF => { // HLT

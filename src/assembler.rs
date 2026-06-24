@@ -265,6 +265,30 @@ fn assemble(code: String) -> Vec<u8> {
                 let addr = instruction[1].parse::<u8>().unwrap();
                 bytes.push(addr);
             }
+            "PHA" => {
+                bytes.push(0x34);
+                bytes.push(0x00);
+            }
+            "PHW" => {
+                bytes.push(0x35);
+                bytes.push(0x00);
+            }
+            "PHC" => {
+                bytes.push(0x36);
+                bytes.push(0x00);
+            }
+            "PLA" => {
+                bytes.push(0x37);
+                bytes.push(0x00);
+            }
+            "PLW" => {
+                bytes.push(0x38);
+                bytes.push(0x00);
+            }
+            "PLC" => {
+                bytes.push(0x39);
+                bytes.push(0x00);
+            }
             _ => panic!("Unknown instruction"),
         }
     }
