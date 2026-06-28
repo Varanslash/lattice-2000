@@ -289,6 +289,31 @@ fn assemble(code: String) -> Vec<u8> {
                 bytes.push(0x39);
                 bytes.push(0x00);
             }
+            "BRA" => {
+                bytes.push(0x3A);
+                let addr = instruction[1].parse::<u8>().unwrap();
+                bytes.push(addr);
+            }
+            "BEQ" => {
+                bytes.push(0x3B);
+                let addr = instruction[1].parse::<u8>().unwrap();
+                bytes.push(addr);
+            }
+            "BNE" => {
+                bytes.push(0x3C);
+                let addr = instruction[1].parse::<u8>().unwrap();
+                bytes.push(addr);
+            }
+            "BGE" => {
+                bytes.push(0x3D);
+                let addr = instruction[1].parse::<u8>().unwrap();
+                bytes.push(addr);
+            }
+            "BLT" => {
+                bytes.push(0x3E);
+                let addr = instruction[1].parse::<u8>().unwrap();
+                bytes.push(addr);
+            }
             _ => panic!("Unknown instruction"),
         }
     }
